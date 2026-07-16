@@ -136,8 +136,20 @@ sub after_circ_action {
     my ( $self, $params ) = @_;
 
     my $action = $params->{action};
-    
+   
     warn "THE CURRENT ACTTION IS: " . $action;
+
+    if ( $action == 'checkout' ) {
+        my $checkout = $params->{payload}->{checkout};
+        my $checkout_item = $checkout->item;
+        warn 'CHECKOUT ITEM: ' . $checkout_item;
+    }
+
+    if ( $action == 'checkin' ) {
+        my $checkin = $params->{payload}->{old_checkout};
+        my $checkin_item = $checkin->item;
+        warn 'CHECKIN ITEM: ' . $checkin_item;
+    }
 
     return;
 }
