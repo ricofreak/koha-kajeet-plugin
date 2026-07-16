@@ -1,0 +1,95 @@
+[% USE raw %]
+[% USE Asset %]
+[% USE Koha %]
+[% INCLUDE 'doc-head-open.inc' %]
+<title>Koha: Kajeet to Koha: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+</head>
+
+
+<body id="kajeet_api_config" class="plugins">
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+[% PROCESS 'html_helpers.inc' %]
+
+[% WRAPPER breadcrumbs %]
+    [% WRAPPER breadcrumb_item %]
+        <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a>
+    [% END %]
+    [% WRAPPER breadcrumb_item bc_active = 1 %]
+        <span>Kajeet API configuration</span>
+    [% END %]
+[% END %]
+
+<div class="main container-fluid">
+    <div class="row">
+        <div class="col-sm-10 col-sm-push-1">
+            <h1>Kajeet API Configuration</h1>
+
+            <form method="post">
+                [% INCLUDE 'csrf-token.inc' %]
+                <input type="hidden" name="class" value="[% CLASS %]"/>
+                <input type="hidden" name="method" value="[% METHOD %]"/>
+
+                <fieldset class="rows">
+                    <legend>API credentials</legend>
+                    <ol>
+                        <li>
+                            <label for="api_base_url">API base URL: </label>
+                            <input type="text" name="api_base_url" id="api_base_url"
+                                   value="[% api_base_url | html %]" size="60"
+                                   placeholder="https://sentinel-api.kajeet.com/sentinel/api" />
+                        </li>
+                        <li>
+                            <label for="username">Username: </label>
+                            <input type="text" name="username" id="username"
+                                   value="[% username | html %]" size="60"
+                                   autocomplete="off" />
+                        </li>
+                        <li>
+                            <label for="password">Password: </label>
+                            <input type="password" name="password" id="password"
+                                   value="" size="60" autocomplete="new-password"
+                                   [% IF password_is_set %]placeholder="**************************"[% END %] />
+                        </li>
+                    </ol>
+                </fieldset>
+
+                <fieldset class="rows">
+                    <legend>Item types</legend>
+                    <ol>
+                        <li>
+                            <label for="itemtypes">Choose item types: </label>
+                            <select name="itemtypes" id="itemtypes" multiple size="8">
+                                [% FOREACH it IN itemtypes %]
+                                    <option value="[% it.itemtype | html %]"
+                                        [% IF selected_itemtypes.${it.itemtype} %]selected="selected"[% END %]>
+                                        [% it.translated_description | html %]
+                                    </option>
+                                [% END %]
+                            </select>
+                        </li>
+                    </ol>
+                </fieldset>
+
+                <fieldset class="action">
+                    <input type="hidden" name="save" value="1" />
+                    <input type="submit" class="btn btn-primary" value="Save configuration" />
+                    <a class="cancel" href="/cgi-bin/koha/plugins/plugins-home.pl">Cancel</a>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        if ($.fn.select2) {
+            $("#itemtypes").select2({ width: '30em' });
+        }
+    });
+</script>
+
+[% INCLUDE 'intranet-bottom.inc' %]
+
