@@ -112,6 +112,12 @@ sub configure {
     }
 }
 
+sub intranet_head {
+    my ( $self ) = @_;
+    
+    return;
+}
+
 sub static_routes {
     my ( $self, $args ) = @_;
 
@@ -126,3 +132,12 @@ sub api_namespace {
     return 'bywatersolutions_kajeettokoha';
 }
 
+sub after_circ_action {
+    my ( $self, $params ) = @_;
+
+    my $action = $params->{action};
+    
+    warn "THE CURRENT ACTTION IS: " . $action;
+
+    return;
+}
