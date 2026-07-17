@@ -31,6 +31,12 @@ sub authenticate {
     return;
 }
 
+sub _token {
+    my ($self) = @_;
+    $self->authenticate unless $self->{_kajeet_token};
+    return $self->{_kajeet_token};
+}
+
 sub _api_password {
     my ($self) = @_;
     my $stored = $self->retrieve_data('password');
