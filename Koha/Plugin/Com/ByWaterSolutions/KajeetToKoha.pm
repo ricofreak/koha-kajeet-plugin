@@ -137,8 +137,6 @@ sub after_circ_action {
 
     my $action = $params->{action};
    
-    warn "THE CURRENT ACTTION IS: " . $action;
-
     if ( $action eq 'checkout' ) {
         my $checkout = $params->{payload}->{checkout};
         my $checkout_item = $checkout->item;
@@ -146,17 +144,25 @@ sub after_circ_action {
 
         return unless $self->_itemtype_is_configured($itemtype);
         try {
-            warn 'HERE WE TRY';
+            warn 'HERE WE TRY to activate the device';
         }
         catch {
-            warn 'HERE WE CATCH';
+            warn 'Problem activating the Kajeet device';
         };
     }
 
     if ( $action eq 'checkin' ) {
-        my $checkin = $params->{payload}->{old_checkout};
+        my $checkin = $params->{payload}->{checkout};
         my $checkin_item = $checkin->item;
-        warn 'CHECKIN ITEM: ' . $checkin_item;
+        my $itemtype = $checkin_item->effective_itemtype;
+
+        return unless $self->_itemtype_is_configured($itemtype);
+        try {
+            warn 'HERE WE TRY to deactivate the device';
+        }
+        catch {
+            warn 'Problem deactivating the Kajeet device';
+        };
     }
 
     return;
