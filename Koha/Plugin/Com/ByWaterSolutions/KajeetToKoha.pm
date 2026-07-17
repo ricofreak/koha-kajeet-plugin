@@ -139,13 +139,21 @@ sub after_circ_action {
    
     warn "THE CURRENT ACTTION IS: " . $action;
 
-    if ( $action == 'checkout' ) {
+    if ( $action eq 'checkout' ) {
         my $checkout = $params->{payload}->{checkout};
         my $checkout_item = $checkout->item;
-        warn 'CHECKOUT ITEM: ' . $checkout_item;
+        my $itemtype = $checkout_item->effective_itemtype;
+
+        return unless $self->_itemtype_is_configured($itemtype);
+        try {
+            warn 'HERE WE TRY';
+        }
+        catch {
+            warn 'HERE WE CATCH';
+        };
     }
 
-    if ( $action == 'checkin' ) {
+    if ( $action eq 'checkin' ) {
         my $checkin = $params->{payload}->{old_checkout};
         my $checkin_item = $checkin->item;
         warn 'CHECKIN ITEM: ' . $checkin_item;
@@ -153,3 +161,13 @@ sub after_circ_action {
 
     return;
 }
+
+# a way to check if the item type is configured to be a hotspot that should be activated/deactived 
+sub _itemtype_is_configured {
+    my ( $self, $itemtype ) = @_;
+    my $stored = $self->retrieve_data('itemtypes');
+    return 0 unless $stored && $itemtype;
+    my %configured = map { $_ => 1 } @{ decode_json($stored) };
+    return exists $configured{$itemtype} ? 1 : 0;
+}
+
